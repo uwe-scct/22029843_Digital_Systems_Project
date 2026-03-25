@@ -21,21 +21,49 @@ grid_res = 0.2   # coarser resolution for performance
 reflection_coeff = 0.7 # 0 = totaly absorbant, 1 = totaly reflective
 max_order = 1 # number of reflections (2 works best)
 
-# --- 3D Grid ---
+# 3D Grid 
 x = np.arange(0, room_length, grid_res)
 y = np.arange(0, room_width, grid_res)
 z = np.arange(0, room_height, grid_res)
 X, Y, Z = np.meshgrid(x, y, z, indexing='ij')  # shape (Nx, Ny, Nz)
 
-# --- Speaker ---
-speaker_pos = np.array([2.0, 2.0, speaker_height])
-direction_angle = np.deg2rad(45)  # 0° faces +x
+# Speaker positioning class
+class Speaker:
+    def __init__(self, position, angle, arrow_length=0.4):
+        self.position = position
+        self.angle = angle
+        self.arrow_length = arrow_length
+        self.plot = None
 
-# --- Listener slice ---
+    def draw(self, ax):
+        self.plot = ax.arrow(self.position[0], self.position[1], 
+                             self.arrow_length * np.cos(self.angle), self.arrow_length * np.sin(self.angle), 
+                             color='cyan', width=0.1, label = 'Speaker')
+    
+
+    def update_plot(self, ax):
+        if self.plot:
+            self.plot.remove()
+        self.draw(ax)
+
+    def set_position(self, x, y):
+        # keeps the arrow inside the room 
+        x = np.clip(x, 0, room_length)
+        y = np.clip(y, 0, room_width)
+    
+        self.position[0] = x
+        self.position[1] = y
+
+    def set_angle(self, angle):
+        self.angle = angle
+
+speaker = Speaker(np.array([2.0, 2.0, speaker_height]), np.deg2rad(45)) # initial insatance 
+
+# Listener slice 
 listener_height = 1.2
 z_index = np.argmin(np.abs(z - listener_height))
 
-# --- Pressure computation --- (updated for visible SPL)
+# Pressure computation (updated for visible SPL)
 def compute_pressure_3d_complex(source_pos, source_angle, k, attenuation=1.0):
     dx = X - source_pos[0]
     dy = Y - source_pos[1]
@@ -54,8 +82,8 @@ def compute_pressure_3d_complex(source_pos, source_angle, k, attenuation=1.0):
                  dir_unit[..., 1] * forward[1] +
                  dir_unit[..., 2] * forward[2] )
 
-    # --- Adjusted directivity to avoid near-zero everywhere ---
-    #directivity = np.clip(cos_angle, 0.0, 1.0)**0.5
+    # Updated directivity to avoid near-zero everywhere
+    # directivity = np.clip(cos_angle, 0.0, 1.0)**0.5
     directivity = ((1.0 + cos_angle) / 2.0) ** 0.5
 
     # Phase term
@@ -68,14 +96,14 @@ def compute_pressure_3d_complex(source_pos, source_angle, k, attenuation=1.0):
     return attenuation * directivity * phase * air_absorption / distance
 
 
-# --- Image source generator --- (updated to preserve attenuation)
+# Image source generator (updated to preserve attenuation)
 def generate_image_sources_3d(position, angle, order, current_attentuation=1.0):
     if order == 0:
         return [(position, angle, current_attentuation)]
 
     images = []
 
-    # reflect helper (keeps attenuation positive)
+    # Reflection (keeps attenuation positive)
     def reflect(new_position, new_angle, current_attentuation):
         return (new_position, new_angle, current_attentuation * reflection_coeff)
 
@@ -100,14 +128,14 @@ def generate_image_sources_3d(position, angle, order, current_attentuation=1.0):
 
     return images
 
-# --- Compute field ---
+# Compute field 
 def compute_field (frequency, direction_angle, max_order):
     wavelength = c / frequency
     k = 2 * np.pi / wavelength
 
     p_total = np.zeros_like(X, dtype=complex)
 
-    all_sources = generate_image_sources_3d(speaker_pos, direction_angle, max_order)
+    all_sources = generate_image_sources_3d(speaker.position, direction_angle, max_order)
 
     for pos, angle, atten in all_sources:
         if atten > 0.01:
@@ -122,14 +150,14 @@ def compute_field (frequency, direction_angle, max_order):
 
     return spl
 
-# --- Initial values for variables ---
+# Initial variables values
 frequency = 200.0
 direction_angle = np.deg2rad(45)#
 max_order = 1
 
 spl = compute_field(frequency, direction_angle, max_order)
 
-# --- Plot ---
+# Plot
 fig, ax = plt.subplots(figsize=(8, 5))
 plt.subplots_adjust(bottom=0.3)
 
@@ -141,29 +169,37 @@ img = ax.imshow(spl[:, :, z_index].T,
 
 plt.colorbar(img, ax=ax, label='Relative SPL (dB)')
 
-speaker_plot = ax.scatter(speaker_pos[0], speaker_pos[1], c='cyan', s=60, label='Speaker', picker=True)
+speaker.draw(ax)
 
 ax.set_title(f'Wave Interference SPL')
 ax.set_xlabel('Room length (m)')
 ax.set_ylabel('Room width (m)')
 ax.legend()
 
-# --- Sliders ---
-ax_freq = plt.axes([0.2, 0.2, 0.6, 0.03])
-ax_angle = plt.axes([0.2, 0.15, 0.6, 0.03])
-ax_order = plt.axes([0.2, 0.1, 0.6, 0.03])
+# Sliders
+ax_room_length = plt.axes([0.2, 0.2, 0.6, 0.03])
+ax_freq = plt.axes([0.2, 0.15, 0.6, 0.03])
+ax_angle = plt.axes([0.2, 0.1, 0.6, 0.03])
+ax_order = plt.axes([0.2, 0.05, 0.6, 0.03])
+
 
 s_freq = Slider(ax_freq, 'Freq (Hz)', 50, 500, valinit=frequency)
 s_angle = Slider(ax_angle, 'Angle (deg)', 0, 360, valinit=45)
 s_order = Slider(ax_order, 'Reflections', 0, 3, valinit=max_order, valstep=1)
+s_length = Slider (ax_room_length, 'Room Length (m)', 1, 20, valinit=room_length)
+
 
 # --- Update ---
 def update(val):
-    global frequency, direction_angle, max_order
+    global frequency, direction_angle, max_order, room_length
 
     frequency = s_freq.val
     direction_angle = np.deg2rad(s_angle.val)
     max_order = int(s_order.val)
+    room_length = s_length.val
+
+    speaker.set_angle(direction_angle)
+    speaker.update_plot(ax)
 
     new_spl = compute_field(frequency, direction_angle, max_order)
 
@@ -172,8 +208,51 @@ def update(val):
 
     fig.canvas.draw_idle()
 
+def on_press(event):
+    global dragging 
+
+    if event.inaxes != ax:
+        return
+    
+    if event.xdata is None or event.ydata is None:
+        return
+
+    dist = np.hypot(event.xdata - speaker.position[0], event.ydata - speaker.position[1])
+    if dist < 0.5:
+        dragging = True
+
+def on_release(event):
+    global dragging
+    dragging = False
+    
+
+def on_motion(event):
+    global last_update
+
+    if not dragging or event.inaxes != ax:
+        return
+
+    current_time = time.time()
+    if current_time - last_update < update_interval:
+        return  # skip frame
+
+    last_update = current_time
+
+
+    speaker.set_position(event.xdata, event.ydata)
+    speaker.update_plot(ax)
+
+    new_spl = compute_field(frequency, direction_angle, max_order)
+    img.set_data(new_spl[:, :, z_index].T)
+
+    fig.canvas.draw_idle()
+
 s_freq.on_changed(update)
 s_angle.on_changed(update)
 s_order.on_changed(update)
+s_length.on_changed(update)
+fig.canvas.mpl_connect('button_press_event', on_press)
+fig.canvas.mpl_connect('button_release_event', on_release)
+fig.canvas.mpl_connect('motion_notify_event', on_motion)
 
 plt.show()
