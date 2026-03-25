@@ -172,71 +172,8 @@ def update(val):
 
     fig.canvas.draw_idle()
 
-def on_press(event):
-    global dragging 
-
-    if event.inaxes != ax:
-        return
-    
-    # makes sure click event is near speaker position
-    contains, _ = speaker_plot.contains(event)
-    if contains:
-        dragging = True
-
-def on_release(event):
-    global dragging
-    dragging = False
-
-    if not dragging or event.inaxes != ax:
-        return 
-    
-    # keep inside room
-    new_x = np.clip(event.xdata, 0, room_length)
-    new_y = np.clip(event.ydata, 0, room_width)
-
-    # Update speaker position
-    speaker_pos[0] = new_x
-    speaker_pos[1] = new_y
-
-    # Move marker
-    speaker_plot.set_offsets([[new_x, new_y]])
-
-    # Recompute field 
-    new_spl = compute_field(frequency, direction_angle, max_order)
-    img.set_data(new_spl[:, :, z_index].T)
-
-    fig.canvas.draw_idle()
-
-def on_motion(event):
-    global speaker_pos, last_update
-
-    if not dragging or event.inaxes != ax:
-        return
-
-    current_time = time.time()
-    if current_time - last_update < update_interval:
-        return  # skip frame
-
-    last_update = current_time
-
-    new_x = np.clip(event.xdata, 0, room_length)
-    new_y = np.clip(event.ydata, 0, room_width)
-
-    speaker_pos[0] = new_x
-    speaker_pos[1] = new_y
-
-    speaker_plot.set_offsets([[new_x, new_y]])
-
-    new_spl = compute_field(frequency, direction_angle, max_order)
-    img.set_data(new_spl[:, :, z_index].T)
-
-    fig.canvas.draw_idle()
-
 s_freq.on_changed(update)
 s_angle.on_changed(update)
 s_order.on_changed(update)
-fig.canvas.mpl_connect('button_press_event', on_press)
-fig.canvas.mpl_connect('button_release_event', on_release)
-fig.canvas.mpl_connect('motion_notify_event', on_motion)
 
 plt.show()

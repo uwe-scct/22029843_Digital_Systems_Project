@@ -51,7 +51,8 @@ mark 7
 
 - directivity is idealised(too straight) whereas in real life its more spread out so we can implement a power law to create a more realistic speaker pattern
 
-- performance issue || at the moment the recursion of the higher order reflections grows VERY fast, we can fix this by limiting duplicates by pruning weak sources
+- performance issue || at the moment the recursion of the higher order reflections grows VERY fast, we can fix this by limiting duplicates by pruning 
+weak sources
 
 - need to implement air absorbtion as in real life sound looses energy over distance
 
