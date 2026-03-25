@@ -8,8 +8,8 @@ wavelength = c / frequency
 k = 2 * np.pi / wavelength # wave number
 
 # Room setup
-room_length = 7.0   # meters X
-room_width = 5.0    # meters Y
+room_length = 10.0   # meters X
+room_width = 10.0    # meters Y
 room_height = 3.0   # meters Z
 speaker_height = 1.2
 grid_res = 0.2     # coarser resolution for 3D in meters
@@ -25,7 +25,7 @@ z = np.arange(0, room_height, grid_res)
 X, Y, Z = np.meshgrid(x, y, z, indexing='ij')  # shape (Nx, Ny, Nz)
 
 # --- Speaker ---
-speaker_pos = np.array([2.5, 2.0, speaker_height])
+speaker_pos = np.array([2.0, 2.0, speaker_height])
 direction_angle = np.deg2rad(45)  # 0° faces +x
 
 # --- Pressure computation --- NEW!!!
@@ -47,13 +47,16 @@ def compute_pressure_3d_complex(source_pos, source_angle, attenuation=1.0):
                  dir_unit[..., 1] * forward[1] +
                  dir_unit[..., 2] * forward[2] )
     
-    directivity = np.clip(cos_angle, 0.0, None)
+    directivity = np.clip(cos_angle, 0.0, None) **2
 
     # Phase term
     phase = np.exp(1j * k * distance)
 
+    # air absorption
+    air_absorption = np.exp(-0.01 * distance)
+
     # Complex pressure field
-    return attenuation * directivity * phase / distance
+    return attenuation * directivity * phase *air_absorption / distance
 
 # Function that generates image sources (pixels) recursively with keeping attentuation
 def generate_image_sources_3d(pos, angle, order, current_attentuation=1.0):
@@ -63,7 +66,8 @@ def generate_image_sources_3d(pos, angle, order, current_attentuation=1.0):
     images = []
 
     def reflect(new_pos, new_angle):
-        return (new_pos, new_angle, current_attentuation * reflection_coeff)
+        phase_flip = -1
+        return (new_pos, new_angle, current_attentuation * reflection_coeff * phase_flip)
 
     images.extend([
         reflect(np.array([-pos[0], pos[1], pos[2]]), np.pi - angle),
@@ -93,11 +97,9 @@ for pos, angle, atten in all_sources:
 # --- Convert physical pressure ---
 p_mag = np.abs(p_total)
 
-# Normalize for visualization
-p_mag /= np.max(p_mag)
-
 # Convert to SPL-like dB
-spl = 20 * np.log10(p_mag + 1e-6)
+spl = 20 * np.log10(p_mag + 1e-12)
+spl = np.clip(spl, -60, 0)
 
 # --- Plot horizontal slice ---
 listener_height = 1.2
