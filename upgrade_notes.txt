@@ -1,0 +1,111 @@
+Higher-order reflections (2nd, 3rd)
+
+destructive and constructive interference 
+
+Floor & ceiling (true 3D ISM)
+
+Frequency bands
+
+Impulse response & RT60
+
+Listener-based objective functions
+
+Optimization loop (gradient or evolutionary)
+
+cumulative atentuation (pass atentuation recursively)
+
+phase (introduce wavelength) 
+this is the step that really transforms your model from a “ray energy”
+approximation into a wave-based acoustic simulation.
+
+fourier transforms
+
+
+
+try experiments on mark 5.
+
+1. Change frequency
+frequency = 80    # room modes
+frequency = 500   # dense interference
+frequency = 2000  # very fine patterns
+2. Turn reflections off
+max_order = 0
+
+→ clean spherical wave
+
+3. Compare with/without phase
+
+Comment out np.exp(1j * k * dist)
+→ you'll immediately see the difference
+
+
+
+Mark 6 - 3D directionality
+
+This uses:
+directivity = cos(angle between forward vector and listener direction)
+
+
+mark 7 
+- right now, reflections only scale amplitude but in reality some surfaces introduce phase shifts especially rigid walls (often means no inversion)
+
+- directivity is idealised(too straight) whereas in real life its more spread out so we can implement a power law to create a more realistic speaker pattern
+
+- performance issue || at the moment the recursion of the higher order reflections grows VERY fast, we can fix this by limiting duplicates by pruning weak sources
+
+- need to implement air absorbtion as in real life sound looses energy over distance
+
+- remove SPL normalization 
+
+Mark 8
+the acoustic simulation engine is now at a good point so 
+i want to start working twoards making it more interactive 
+and builduing a ui around that, this also means ill need to
+worry more about effeciency as real time adjustments will
+be resource intensive
+
+for now i will add matplotluip interavtive sliders for variables such as
+- frequency
+- reflection order
+- speaker angle
+also will add click and drag to move the speaker around
+
+THE ADDITIONS MEAN WE WILL NEED A PERFORMANCE BOOST SO I WILL THOTTLE UPDATES USING TIME
+
+======= Mark 9 =======
+
+global variables are messy and will make adding more fetures for the Ui later mnore difficult
+so i want to change all the code for the UI to a self contained class
+
+Structure (mark9)
+
+the physics engine will stay in its funions holding no state, no matplotlib 
+and making it easeir to reuse/call
+
+whereas all code attaining to the GUI (sliders, heatmap, ect..) will be 
+contained withing a class which holds its state and can therefore call 
+on the physics engine
+
+FAILED
+
+======== Mark 10 =======
+
+arrow added
+class fixed 
+vairiabble parsing fixed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
