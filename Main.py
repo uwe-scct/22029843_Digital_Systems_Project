@@ -36,10 +36,18 @@ def compute_pressure_3d_complex(source_pos, source_angle, attenuation=1.0):
 
     distance = np.sqrt(dx**2 + dy**2 + dz**2) + 1e-6  # full 3D distance
 
-    # Horizontal only directionality
-    theta = np.arctan2(dy, dx) - source_angle
-    directivity = np.cos(theta)
-    directivity[directivity < 0] = 0.0
+    dir_vector = np.stack((dx, dy, dz), axis=-1)
+    dir_unit = dir_vector / distance[..., np.newaxis]
+
+    forward = np.array([np.cos(source_angle), # x
+                         np.sin(source_angle), # y
+                         0.0]) # z - for tilt implementation later
+    
+    cos_angle = (dir_unit[..., 0] * forward[0] +
+                 dir_unit[..., 1] * forward[1] +
+                 dir_unit[..., 2] * forward[2] )
+    
+    directivity = np.clip(cos_angle, 0.0, None)
 
     # Phase term
     phase = np.exp(1j * k * distance)
