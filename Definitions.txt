@@ -1,0 +1,26 @@
+Acoustic ray tracing -
+is a geometrical modeling technique that simulates sound propagation by tracing paths of energy particles (rays) from a source to a receiver
+
+impulse response -
+a, typically digital, recording that captures how an acoustic enviroment react to a very short full frequency sound
+
+Sabines formula - an empirical acoustic equation that calculates a rooms reverberation time (rT60)
+
+specular reflection - Specular reflection is the mirror-like reflection of light (or other waves, in this case sound) from a smooth, polished surface, where rays reflect in a single direction.
+
+diffuse reflection - the scattering of waves in many directions when striking a roughor uneven surface
+
+snells law - an equation that dictateshow waves bend when crossing the boundry between media
+
+Lamberts law - part of the beer lambert law is an equation to quantify the exponential loss of energy as a wave traveles through a uniformly absorbing medium
+
+vector - a mathmatical or physical quantity that has both magnitude and direction
+
+ISM - The Image-Source Method is a geometric acoustic algorithm used to simulate sound propagation and reflections in an enclosed space by creating virtual "image sources" reflected across wall planes
+
+RIR - the same as Impulse Response, acts as a digital fingerprint
+
+reflection order - defines the number of surfaces a sound wave hits before it reaches a receiver
+
+scattering coeffecient - quantifies the ratio of non- specularly reflected acoustic energy to the total reflected energy from a surface, allowing us to simulate surface roughness
+

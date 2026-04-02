@@ -1,0 +1,83 @@
+intro
+==========================================================================
+Krokstad, A., Strom, S. and Sørsdal, S. (1968) Calculating the Acoustical Room Response by the Use of a Ray Tracing Technique. Journal of Sound and Vibration [online]. 8 (1), pp. 118-125. [Accessed 29 March 2026].
+
+
+sabines formula
+==========================================================================
+Joyce, W.B. (1974) The Journal of the Acoustic Society of America. Sabine's Formula [online]., p. 812. [Accessed 30 March 2026].
+
+combination of methods
+==========================================================================
+Vorländer, M. (2013) The Journal of the Acoustic Society of America. Computer Simulations in Room Acoustics: Concepts and Uncertainties [online]. 133 (3), pp. 1203-1213. [Accessed 30 March 2026].
+
+
+coeffecients
+==========================================================================
+Kuttruff, H. (2014) 5th Edition. Room Acoustics [online]. 5, pp. 316-331. [Accessed 31 March 2026].
+
+
+hybrid methods
+==========================================================================
+Rindel J. H. (1995) Computer Simulation Techniques For Acoustical Design
+ of Rooms. [online]. 23, pp. 81-86. [Accessed 31 March 2026].
+
+Rindel, J.H. (2004) Odeon and Scattering Coefficient. [online]. 1,
+ pp. 1-45. [Accessed 31 March 2026].
+
+
+archived acoustics (early raycasting)
+==========================================================================
+Bojičić S., Pavlović D.S. and Mijić M. (2018) Archives of Acoustics.
+ Formation of Scattering Characteristics For Acoustical Ray Tracing 
+Simulation [online]. 43, p. 4. [Accessed 31 March 2026].
+
+early ISM models
+==========================================================================
+Kirszenstein, J. (1984) Applied Acoustics. An Image Source Computer 
+Model For Room Acoustics Analysis and Electroacoustic Simulation
+ [online]. 17 (4), pp. 275-290. [Accessed 31 March 2026].
+
+rays vs waves
+==========================================================================
+Siltanen, S., Lokki, T. and Savioja, L. (2010)
+Proceedings of the International Symposium on Room Acoustics. 
+Rays Or Waves? Understanding the Strengths and Weaknesses 
+of Computational Room Acoustics Modeling Techniques [online].,
+ pp. 1-6. [Accessed 31 March 2026].
+
+Wave based
+==========================================================================
+Jörgensson, P. and Kári, F. (2020) Wave-based Virtual Acoustics. [online].
+, pp. 8-76. [Accessed 01 April 2026]
+
+sabines law website
+==========================================================================
+SynAudCon(1996). Available from: https://www.prosoundtraining.com/2024/03/15/reverberation-time-rt/ [Accessed 01 April 2026]
+
+specular reflection image
+==========================================================================
+OnlineMathLearning(2005). Available from: https://www.onlinemathlearning.com/specular-reflection.html [Accessed 01 April 2026]
+
+diffuse reflection image
+==========================================================================
+Photokonnexion(2013). Available from:https://www.photokonnexion.com/definition-diffuse-reflection/ [Accessed 01 April 2026]
+
+snells law image
+=============================================
+PersonalMath(N/A). Available from: https://personal.math.ubc.ca/~cass/courses/m309-01a/chu/Fundamentals/snell.htm [Accessed 01 April 2026]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

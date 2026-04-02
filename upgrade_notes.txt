@@ -95,8 +95,17 @@ arrow added
 class fixed 
 vairiabble parsing fixed
 
-
-
+==== Mark 11 =====
+GUI upgrades
+added Listener height slider
+Removed room length slider
+Added Text Box entries for:
+Room length (2–30 m)
+Room height (2–30 m)
+Dropdown entries for reflection_coeff presets
+Dynamic updates to:
+z_index when listener height changes
+global room_length, room_height, and reflection_coeff
 
 
 
