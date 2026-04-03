@@ -85,38 +85,3 @@ plt.xlabel('Room length (m)')
 plt.ylabel('Room width (m)')
 plt.legend()
 plt.show()
-
-# --- Optional: vertical slice along x=2.5 m ---
-x_slice = 2.5
-x_index = np.argmin(np.abs(x - x_slice))
-plt.figure(figsize=(5, 5))
-plt.imshow(spl[x_index, :, :].T, extent=(0, room_width, 0, room_height),
-           origin='lower', cmap='inferno', aspect='auto')
-plt.colorbar(label='Relative SPL (dB)')
-plt.title(f'Vertical SPL Slice at x={x_slice} m')
-plt.xlabel('Room width (m)')
-plt.ylabel('Height (m)')
-plt.show()
-
-X_flat = X.flatten()
-Y_flat = Y.flatten()
-Z_flat = Z.flatten()
-spl_flat = spl.flatten()
-
-# Normalize SPL for color mapping
-norm_spl = (spl_flat - spl_flat.min()) / (spl_flat.max() - spl_flat.min())
-
-# --- 3D Scatter Plot ---
-fig = plt.figure(figsize=(10, 7))
-ax = fig.add_subplot(111, projection='3d')
-
-sc = ax.scatter(X_flat, Y_flat, Z_flat, c=spl_flat, cmap='inferno', marker='o', s=5, alpha=0.5)
-ax.scatter(speaker_pos[0], speaker_pos[1], speaker_pos[2], c='cyan', s=100, label='Speaker')
-
-ax.set_xlabel('X (m)')
-ax.set_ylabel('Y (m)')
-ax.set_zlabel('Z (m)')
-ax.set_title('3D SPL Distribution in Room')
-fig.colorbar(sc, label='Relative SPL (dB)')
-ax.legend()
-plt.show()
